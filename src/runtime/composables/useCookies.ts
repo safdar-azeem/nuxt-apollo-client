@@ -1,5 +1,5 @@
-import { useNuxtApp } from '#app'
 import JSCookies from 'js-cookie'
+import { useNuxtApp } from '#app'
 
 export const setToken = ({ key = '', token, expires = 1 / 720 }) => {
   const tokenKey = key || (useNuxtApp()['tokenKey'] as string)
