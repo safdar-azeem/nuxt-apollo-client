@@ -62,3 +62,12 @@ const main = () => {
 }
 
 main()
+
+const copyInstallPeerDepsScript = () => {
+  const sourcePath = path.resolve(__dirname, 'install-peer-deps.js')
+  const destPath = path.resolve(__dirname, '../dist/install-peer-deps.js')
+  fs.copyFileSync(sourcePath, destPath)
+  console.log('Copied install-peer-deps.js to dist folder')
+}
+
+copyInstallPeerDepsScript()
