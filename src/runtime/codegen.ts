@@ -1,6 +1,7 @@
 import codegen from 'vite-plugin-graphql-codegen'
 import fs from 'fs'
 import type { ModuleOptions } from '../module'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 
 let isCodegenDone = false
 
@@ -207,8 +208,8 @@ const useQuery = <TResult = any, TVariables = any>(
   })
 
   if (nuxt.options.vite?.plugins) {
-    nuxt.options.vite.plugins.push(codegenPlugin)
+    nuxt.options.vite.plugins.push(codegenPlugin, viteCommonjs())
   } else {
-    nuxt.options.vite.plugins = [codegenPlugin]
+    nuxt.options.vite.plugins = [codegenPlugin, viteCommonjs()]
   }
 }
