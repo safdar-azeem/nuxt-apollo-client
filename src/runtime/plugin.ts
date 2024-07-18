@@ -22,7 +22,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   if (process.client) {
-    const apolloState = nuxtApp.payload.apollo
+    const apolloState = NuxtApollo.clients || {}
     for (const [key, state] of Object.entries(apolloState)) {
       clients[key].restore(state)
     }
