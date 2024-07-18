@@ -62,53 +62,52 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
 
-    nuxt.options.runtimeConfig['endPoints'] = _options?.endPoints
-    nuxt.options.runtimeConfig['tokenKey'] = _options?.tokenKey || 'token'
-    //@ts-ignore
-    nuxt.options.runtimeConfig['setContext'] = _options?.setContext || (() => ({}))
+    const runtimeConfig = {
+      clients: _options.endPoints,
+      tokenKey: _options.tokenKey || 'token',
+      setContext: _options.setContext || (() => ({})),
+      memoryConfig: _options.memoryConfig,
+      useGETForQueries: _options.useGETForQueries,
+      apolloClientConfig: _options.apolloClientConfig,
+    }
 
-    nuxt.options.runtimeConfig['memoryConfig'] = _options?.memoryConfig
-    nuxt.options.runtimeConfig['useGETForQueries'] = _options?.useGETForQueries
-    nuxt.options.runtimeConfig['apolloClientConfig'] = _options?.apolloClientConfig
+    Object.assign(nuxt.options.runtimeConfig, runtimeConfig)
 
     addTemplate({
       filename: 'apollo.d.ts',
-      getContents: () =>
-        [
-          'import type { ClientConfig } from "@nuxtjs/apollo"',
-          "declare module '#apollo' {",
-          `  export type ApolloClientKeys = '${Object.keys(_options.endPoints).join("' | '")}'`,
-          '  export const NuxtApollo: {',
-          '    clients: Record<ApolloClientKeys, ClientConfig>',
-          '    tokenKey: string',
-          '  }',
-          '}',
-        ].join('\n'),
+      getContents: () => `
+        import type { ClientConfig } from "@nuxtjs/apollo"
+        declare module '#apollo' {
+          export type ApolloClientKeys = '${Object.keys(_options.endPoints).join("' | '")}'
+          export const NuxtApollo: {
+            clients: Record<ApolloClientKeys, ClientConfig>
+            tokenKey: string
+          }
+        }
+      `,
     })
 
     addTemplate({
       filename: 'apollo.mjs',
       write: true,
-      getContents: () =>
-        [
-          'export const NuxtApollo = {',
-          ` clients: ${JSON.stringify(_options?.endPoints)},`,
-          ` tokenKey: ${JSON.stringify(_options?.tokenKey)},`,
-          ` setContext: ${JSON.stringify(_options?.setContext)},`,
-          ` memoryConfig: ${JSON.stringify(_options?.memoryConfig)},`,
-          ` useGETForQueries: ${JSON.stringify(_options?.useGETForQueries)},`,
-          ` apolloClientConfig: ${JSON.stringify(_options?.apolloClientConfig)},`,
-          '}',
-        ].join('\n'),
+      getContents: () => `
+        export const NuxtApollo = {
+          clients: ${JSON.stringify(_options.endPoints)},
+          tokenKey: ${JSON.stringify(_options.tokenKey)},
+          setContext: ${JSON.stringify(_options.setContext)},
+          memoryConfig: ${JSON.stringify(_options.memoryConfig)},
+          useGETForQueries: ${JSON.stringify(_options.useGETForQueries)},
+          apolloClientConfig: ${JSON.stringify(_options.apolloClientConfig)},
+        }
+      `,
     })
 
     nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
+    nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
 
     addCodegenPlugin(_options, nuxt, resolve)
-
-    nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`
-
     addPlugin(resolve('./runtime/plugin'))
+    addImportsDir(resolve('./runtime/composables'))
     addImportsDir(`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`)
   },
 })
