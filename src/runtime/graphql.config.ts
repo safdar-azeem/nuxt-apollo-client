@@ -12,7 +12,15 @@ import {
   type InMemoryCacheConfig,
 } from '@apollo/client/core'
 
-export type SetGraphqlContext = (operationName: string, variables: any) => Record<string, any>
+export type SetGraphqlContext = ({
+  operationName,
+  variables,
+  token,
+}: {
+  operationName: string
+  variables: any
+  token: string
+}) => Record<string, any>
 
 interface ConfigProps {
   endPoints: Record<string, string>
@@ -33,7 +41,11 @@ export const graphqlConfig = ({
 }: ConfigProps) => {
   const authLink = new ApolloLink((operation, forward) => {
     const token = JSCookies.get(tokenKey)
-    const context = setContext?.(operation?.operationName, operation?.variables)
+    const context = setContext?.({
+      operationName: operation?.operationName,
+      variables: operation?.variables,
+      token,
+    })
 
     operation.setContext({
       ...context,
