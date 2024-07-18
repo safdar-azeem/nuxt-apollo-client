@@ -1,7 +1,7 @@
 import JSCookies from 'js-cookie'
 import { useNuxtApp } from '#app'
 
-export const setToken = ({ key = '', token, expires = 1 / 720 }) => {
+export const setToken = ({ key = '', token, expires = 1 }) => {
   const tokenKey = key || (useNuxtApp()['tokenKey'] as string)
 
   JSCookies.set(tokenKey, token, { expires: expires })
