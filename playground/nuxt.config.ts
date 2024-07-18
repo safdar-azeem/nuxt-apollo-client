@@ -3,10 +3,9 @@ export default defineNuxtConfig({
   ssr: true,
   apollo: {
     endPoints: {
-      default: 'http://localhost:4000/graphql',
+      default: 'http://localhost:4041/graphql',
     },
     prefix: 'I',
   },
-  pages: true,
   devtools: { enabled: true },
 })
