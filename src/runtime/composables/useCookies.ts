@@ -1,18 +1,18 @@
 import JSCookies from 'js-cookie'
-import { useNuxtApp } from '#app'
+import { NuxtApollo } from '#apollo'
+
+const getKey = (key: string) => {
+  return key || NuxtApollo?.tokenKey || 'token'
+}
 
 export const setToken = ({ key = '', token, expires = 1 }) => {
-  const tokenKey = key || (useNuxtApp()['tokenKey'] as string)
-
-  JSCookies.set(tokenKey, token, { expires: expires })
+  JSCookies.set(getKey(key), token, { expires: expires })
 }
 
 export const getToken = (key = '') => {
-  const tokenKey = key || (useNuxtApp()['tokenKey'] as string)
-  return JSCookies.get(tokenKey)
+  return JSCookies.get(getKey(key))
 }
 
 export const removeToken = (key = '') => {
-  const tokenKey = key || (useNuxtApp()['tokenKey'] as string)
-  JSCookies.remove(tokenKey)
+  JSCookies.remove(getKey(key))
 }
