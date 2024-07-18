@@ -4,9 +4,11 @@ import { graphqlConfig } from './graphql.config'
 import { ApolloClients } from '@vue/apollo-composable'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const endPoints = NuxtApollo?.clients || {}
+
   const clients = graphqlConfig({
-    endPoints: NuxtApollo.clients || {},
-    tokenKey: NuxtApollo.tokenKey || 'token',
+    endPoints: endPoints,
+    tokenKey: NuxtApollo?.tokenKey || 'token',
     //@ts-ignore
     setContext: NuxtApollo?.setContext,
   })
@@ -23,7 +25,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   if (process.client) {
-    const apolloState = NuxtApollo.clients || {}
+    const apolloState = endPoints || {}
     for (const [key, state] of Object.entries(apolloState)) {
       clients[key].restore(state)
     }
