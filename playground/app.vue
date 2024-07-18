@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { result, loading, error, refetch } = useMeQuery()
+</script>
 
 <template>
-  <div>Hello world</div>
+  <div>
+    <h1>Hello world</h1>
+  </div>
 </template>
