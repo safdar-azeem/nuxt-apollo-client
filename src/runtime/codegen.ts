@@ -11,7 +11,10 @@ export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
     enableWatcher: _options?.enableWatcher,
     config: {
       schema: Object.values(_options?.endPoints),
-      documents: `${nuxt.options?.rootDir}/${_options?.gqlDir}/**/*.ts`,
+      documents: [
+        `${nuxt.options?.rootDir}/${_options?.gqlDir}/**/*.ts`,
+        `!${nuxt.options?.rootDir}/${_options?.gqlDir}/generated/index.ts`,
+      ],
       config: {
         preResolveTypes: true,
       },
@@ -19,7 +22,13 @@ export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
         beforeDone: async () => {
           if (!isCodegenDone) {
             isCodegenDone = true
-            return nuxt.callHook('restart')
+            if (nuxt && nuxt.callHook) {
+              nuxt.callHook('restart')
+              nuxt.options.alias[
+                '#graphql'
+              ] = `${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`
+              return
+            }
           }
         },
         afterAllFileWrite: (filePath) => {
@@ -184,7 +193,7 @@ const useQuery = <TResult = any, TVariables = any>(
         },
       },
       generates: {
-        [resolve('./runtime/composables/graphql.ts')]: {
+        [`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated/index.ts`]: {
           plugins: [
             'typescript',
             'typescript-operations',
