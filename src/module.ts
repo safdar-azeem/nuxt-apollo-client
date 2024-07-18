@@ -25,7 +25,7 @@ export interface ModuleOptions {
   useGETForQueries?: boolean
   setContext?: SetGraphqlContext
   memoryConfig?: InMemoryCacheConfig
-  apolloClientConfig?: ApolloClientOptions<any> | null
+  apolloClientConfig?: ApolloClientOptions<any>
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -47,16 +47,26 @@ export default defineNuxtModule<ModuleOptions>({
     runOnBuild: false,
     memoryConfig: null,
     enableWatcher: true,
-    setContext: () => ({}),
+    setContext: null,
     useGETForQueries: false,
     apolloClientConfig: null,
   },
   async setup(_options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
+    nuxt.hook('prepare:types', ({ tsConfig }) => {
+      tsConfig.compilerOptions = {
+        ...tsConfig.compilerOptions,
+        strict: false,
+        noImplicitAny: false,
+      }
+    })
+
     nuxt.options.runtimeConfig['endPoints'] = _options?.endPoints
-    nuxt.options.runtimeConfig['tokenKey'] = _options?.tokenKey
-    nuxt.options.runtimeConfig['setContext'] = _options?.setContext
+    nuxt.options.runtimeConfig['tokenKey'] = _options?.tokenKey || 'token'
+    //@ts-ignore
+    nuxt.options.runtimeConfig['setContext'] = _options?.setContext || (() => ({}))
+
     nuxt.options.runtimeConfig['memoryConfig'] = _options?.memoryConfig
     nuxt.options.runtimeConfig['useGETForQueries'] = _options?.useGETForQueries
     nuxt.options.runtimeConfig['apolloClientConfig'] = _options?.apolloClientConfig
@@ -96,9 +106,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     addCodegenPlugin(_options, nuxt, resolve)
 
-    nuxt.options.alias['#graphql'] = resolve('./runtime/composables')
+    nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`
 
     addPlugin(resolve('./runtime/plugin'))
-    addImportsDir(resolve('./runtime/composables'))
+    addImportsDir(`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`)
   },
 })
