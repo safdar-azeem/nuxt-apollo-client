@@ -9,7 +9,13 @@ const __dirname = path.dirname(__filename)
 
 const sourceFilePath = path.resolve(__dirname, '../src/runtime/codegen.ts')
 const distFilePath = path.resolve(__dirname, '../dist/runtime/codegen.js')
-const graphqlFilePath = path.resolve(__dirname, '../src/runtime/composables/graphql.ts')
+const graphqlFilePath = path.resolve(__dirname, '../dist/runtime/composables/graphql.js')
+const graphqlDtsFilePath = path.resolve(__dirname, '../dist/runtime/composables/graphql.d.ts')
+const composablesIndexFilePath = path.resolve(__dirname, '../dist/runtime/composables/index.js')
+const composablesIndexDtsFilePath = path.resolve(
+  __dirname,
+  '../dist/runtime/composables/index.d.ts'
+)
 
 const readFile = (filePath) => fs.readFileSync(filePath, 'utf8')
 
@@ -29,12 +35,9 @@ const main = () => {
   console.log('Starting build process...')
 
   const originalContent = readFile(sourceFilePath)
-  const graphqlOriginalContent = readFile(graphqlFilePath)
-
   const simplifiedContent = `export const addCodegenPlugin = (_options, nuxt, resolve) => {};`
 
   writeFile(sourceFilePath, simplifiedContent)
-  writeFile(graphqlFilePath, 'export const anyRandomQuery = () => {}')
 
   console.log('Simplified codegen.ts for build process')
 
@@ -45,7 +48,7 @@ const main = () => {
     console.error('Build failed:', error)
 
     writeFile(sourceFilePath, originalContent)
-    writeFile(graphqlFilePath, graphqlOriginalContent)
+
     process.exit(1)
   }
 
@@ -55,19 +58,37 @@ const main = () => {
   console.log('Added transpiled code to dist/runtime/codegen.js')
 
   writeFile(sourceFilePath, originalContent)
-  writeFile(graphqlFilePath, graphqlOriginalContent)
   console.log('Restored original content of src/runtime/codegen.ts')
+
+  fs.unlinkSync(graphqlFilePath)
+  fs.unlinkSync(graphqlDtsFilePath)
+  fs.unlinkSync(composablesIndexFilePath)
+  fs.unlinkSync(composablesIndexDtsFilePath)
+
+  fs.writeFileSync(graphqlFilePath.replace('.js', '.ts'), `export const useAnyQuery = () => {}`)
+  fs.writeFileSync(
+    graphqlDtsFilePath,
+    `
+    export const useAnyQuery: () => any;
+  `
+  )
+
+  fs.writeFileSync(
+    composablesIndexFilePath.replace('.js', '.ts'),
+    `
+  export * from "./useCookies.js";
+  export * from "./graphql";
+  `
+  )
+  fs.writeFileSync(
+    composablesIndexDtsFilePath,
+    `
+  export * from './useCookies.js';
+  export * from './graphql';
+  `
+  )
 
   console.log('Build process completed successfully!')
 }
 
 main()
-
-const copyInstallPeerDepsScript = () => {
-  const sourcePath = path.resolve(__dirname, 'install-peer-deps.js')
-  const destPath = path.resolve(__dirname, '../dist/install-peer-deps.js')
-  fs.copyFileSync(sourcePath, destPath)
-  console.log('Copied install-peer-deps.js to dist folder')
-}
-
-copyInstallPeerDepsScript()
