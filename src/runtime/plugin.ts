@@ -2,6 +2,7 @@ import { NuxtApollo } from '#apollo'
 import { defineNuxtPlugin } from '#app'
 import { graphqlConfig } from './graphql.config'
 import { ApolloClients } from '@vue/apollo-composable'
+import { provideApolloClients } from '@vue/apollo-composable'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const endPoints = NuxtApollo?.clients || {}
@@ -9,10 +10,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   const clients = graphqlConfig({
     endPoints: endPoints,
     tokenKey: NuxtApollo?.tokenKey || 'token',
-    //@ts-ignore
-    setContext: NuxtApollo?.setContext,
+    ...NuxtApollo,
   })
 
+  provideApolloClients(clients)
   nuxtApp.vueApp.provide(ApolloClients, clients)
 
   if (process.server) {
