@@ -1,6 +1,6 @@
-import codegen from 'vite-plugin-graphql-codegen'
 import fs from 'fs'
 import type { ModuleOptions } from '../module'
+import codegen from 'vite-plugin-graphql-codegen'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 
 let isCodegenDone = false
@@ -9,13 +9,16 @@ export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
   const codegenPlugin = codegen({
     runOnBuild: _options?.runOnBuild,
     enableWatcher: _options?.enableWatcher,
+
     config: {
       schema: Object.values(_options?.endPoints),
       documents: [
         `${nuxt.options?.rootDir}/${_options?.gqlDir}/**/*.ts`,
         `!${nuxt.options?.rootDir}/${_options?.gqlDir}/generated/index.ts`,
       ],
+      overwrite: true,
       config: {
+        overwrite: true,
         preResolveTypes: true,
       },
       hooks: {
@@ -106,86 +109,79 @@ import type {
 import { useNuxtApp } from "#app";
 import {ref} from "vue";
    
-
 const defaultResult = () => {
-  const result = ref({});
-  const loading = ref(false);
-  const error = ref(null);
+const result = ref(null);
+const loading = ref(false);
+const error = ref(null);
 
-  return {
-    result,
-    loading,
-    error,
-    onResult: (callback) => {
-      callback?.(result.value);
-    },
-    onError: (callback) => {
-      callback?.(error.value);
-    },
-    start: () => {},
-    stop: () => {},
-    restart: () => {},
-    refetch: () => {},
-    onCompleted: () => {},
-  };
+return {
+  result,
+  loading,
+  error,
+  onResult: (callback) => {
+    callback?.(result.value);
+  },
+  onError: (callback) => {
+    callback?.(error.value);
+  },
+  start: () => {},
+  stop: () => {},
+  restart: () => {},
+  refetch: () => {},
+  onCompleted: () => {},
+};
 };
 
 const useSSRQuery = async (document, variables, options) => {
-  const context = useNuxtApp();
+const context = useNuxtApp();
+const clientId = options?.clientId || "default";
+const apolloClient = context.$apolloClients[clientId];
 
-  const clientId =
-    options?.clientId ||
-    Object.keys(context.$apolloClients)["default"] ||
-    Object.keys(context.$apolloClients)[0];
+try {
+  const { data } = await apolloClient.query({
+    query: document,
+    variables,
+    ...options,
+  });
 
-  const apolloClient = context.$apolloClients[clientId];
+  const result = ref(data);
+  const loading = ref(false);
+  const error = ref(null);
 
-  try {
-    const { data } = await apolloClient.query({
-      query: document,
-      variables,
-      ...options,
-    });
-
-    const result = ref(data);
-    const loading = ref(false);
-    const error = ref(null);
-
-    const onResult = (callback) => {
-      callback(result.value);
-    };
-
-    const onError = (callback) => {
-      callback(error.value);
-    };
-
-    return { ...defaultResult(), result, loading, error, onResult, onError };
-  } catch (error) {      
-    const errorRef = ref(error);
-
-    const onError = (callback) => {
-      callback(error.value);
-    };
-
-    return {
-      ...defaultResult(),
-      error: errorRef,
-      onError,
-    };
-  }
-};  
-
-const useQuery = <TResult = any, TVariables = any>(
-  document,
-  variables,
-  options
-): UseQueryReturn<TResult, TVariables> => {
-  if (process.server) {
-    return useSSRQuery(document, variables, options) as any;
-  }
-  return apolloUseQuery<TResult, TVariables>(document, variables, options);
+  return { ...defaultResult(), result, loading, error };
+} catch (error) {
+  const errorRef = ref(error);
+  return { ...defaultResult(), error: errorRef };
+}
 };
 
+const useQuery = <TResult = any, TVariables = any>(
+document,
+variables,
+options
+): UseQueryReturn<TResult, TVariables> => {
+const instance = getCurrentInstance();
+const ssrResult = ref(null);
+
+if (process.server) {
+  onServerPrefetch(async () => {
+    const result = await useSSRQuery(document, variables, options);
+    ssrResult.value = result.result.value;
+  });
+  return useSSRQuery(document, variables, options) as any;
+}
+
+const query = apolloUseQuery<TResult, TVariables>(document, variables, {
+  ...options,
+  fetchPolicy: 'cache-and-network',
+});
+
+if (instance && ssrResult.value) {
+  query.result.value = ssrResult.value;
+}
+
+return query;
+};
                       `
           )
 
@@ -210,6 +206,7 @@ const useQuery = <TResult = any, TVariables = any>(
             vueCompositionApiImportFrom: 'vue',
             flattenGeneratedTypesIncludeFragments: true,
             ..._options?.config,
+            overwrite: true,
           },
         },
       },
