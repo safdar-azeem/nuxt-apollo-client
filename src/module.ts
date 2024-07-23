@@ -62,17 +62,6 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
 
-    const runtimeConfig = {
-      clients: _options.endPoints,
-      tokenKey: _options.tokenKey || 'token',
-      setContext: _options.setContext || (() => ({})),
-      memoryConfig: _options.memoryConfig,
-      useGETForQueries: _options.useGETForQueries,
-      apolloClientConfig: _options.apolloClientConfig,
-    }
-
-    Object.assign(nuxt.options.runtimeConfig, runtimeConfig)
-
     addTemplate({
       filename: 'apollo.d.ts',
       getContents: () => `
@@ -82,6 +71,16 @@ export default defineNuxtModule<ModuleOptions>({
           export const NuxtApollo: {
             clients: Record<ApolloClientKeys, ClientConfig>
             tokenKey: string
+            setContext: (operationName: string, variables: any) => Record<string, any>
+            gqlDir: string
+            prefix: string
+            config: Record<string, any>
+            plugins: string[]
+            runOnBuild: boolean
+            enableWatcher: boolean
+            memoryConfig: Record<string, any>
+            useGETForQueries: boolean
+            apolloClientConfig: Record<string, any>
           }
         }
       `,
@@ -94,10 +93,16 @@ export default defineNuxtModule<ModuleOptions>({
         export const NuxtApollo = {
           clients: ${JSON.stringify(_options.endPoints)},
           tokenKey: ${JSON.stringify(_options.tokenKey)},
-          setContext: ${JSON.stringify(_options.setContext)},
+          setContext:${_options.setContext},
           memoryConfig: ${JSON.stringify(_options.memoryConfig)},
           useGETForQueries: ${JSON.stringify(_options.useGETForQueries)},
           apolloClientConfig: ${JSON.stringify(_options.apolloClientConfig)},
+          gqlDir: ${JSON.stringify(_options.gqlDir)},
+          prefix: ${JSON.stringify(_options.prefix)},
+          config: ${JSON.stringify(_options.config)},
+          plugins: ${JSON.stringify(_options.plugins)},
+          runOnBuild: ${JSON.stringify(_options.runOnBuild)},
+          enableWatcher: ${JSON.stringify(_options.enableWatcher)},
         }
       `,
     })
