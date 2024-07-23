@@ -8,6 +8,7 @@ A Nuxt module for integrating Apollo Client with SSR and codegen support.
 - Server-Side Rendering (SSR) support
 - GraphQL Code Generator integration
 - Multiple client support
+- File Upload support
 - Automatic token management
 - Automatic type generation for queries and mutations
 - Auto-imports for generated composables and types
