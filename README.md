@@ -12,6 +12,7 @@ A Nuxt module for integrating Apollo Client with SSR and codegen support.
 - Automatic token management
 - Automatic type generation for queries and mutations
 - Auto-imports for generated composables and types
+- Production-ready 📦
 
 ## Installation
 
@@ -21,7 +22,7 @@ npm install nuxt-apollo-client
 yarn add nuxt-apollo-client
 ```
 
-### Everything is set up for you: 📦
+### Everything is set up for you: 🚀
 
 - No need to install Apollo Client or GraphQL codegen packages
 - All necessary dependencies are automatically handled
@@ -86,7 +87,7 @@ const { result, loading, error, refetch } = await useMeQuery()
 </script>
 
 <template>
-  <div v-if="result">Welcome, {{ result.me.name }}!</div>
+  <div>Welcome, {{ result?.me?.name }}!</div>
 </template>
 ```
 
@@ -125,18 +126,19 @@ const handleDelete = async (id: string) => {
 | gqlDir             | `string`                   | `'graphql'`                                    | Directory for GraphQL files              |
 | runOnBuild         | `boolean`                  | `false`                                        | Run codegen on build                     |
 | enableWatcher      | `boolean`                  | `true`                                         | Enable file watcher for codegen          |
-| setContext         | `function`                 | `(operationName, variables) => any`            | Set context for codegen                  |
+| setContext         | `function`                 | `({operationName, variables, token}) => any`   | Set context for codegen                  |
 | memoryConfig       | `InMemoryCacheConfig`      | `{}`                                           | Memory cache config for Apollo Client    |
 | useGETForQueries   | `boolean`                  | `false`                                        | Use GET for queries                      |
 | apolloClientConfig | `ApolloClientOptions<any>` | `null`                                         | Apollo Client config                     |
 
 ## Functions
 
-| Function    | Description                       | Syntax                                                  |
-| ----------- | --------------------------------- | ------------------------------------------------------- |
-| setToken    | Sets the token in the cookie      | `setToken({ key(optional), token, expires(optional) })` |
-| getToken    | Gets the token from the cookie    | `getToken(key(optional))`                               |
-| removeToken | Removes the token from the cookie | `removeToken(key(optional))`                            |
+| Function          | Description                                           | Syntax                                                  |
+| ----------------- | ----------------------------------------------------- | ------------------------------------------------------- |
+| setToken          | Sets the token in the cookie                          | `setToken({ key(optional), token, expires(optional) })` |
+| getToken          | Gets the token from the cookie                        | `getToken(key(optional))`                               |
+| removeToken       | Removes the token from the cookie                     | `removeToken(key(optional))`                            |
+| loadApolloClients | Initializes Apollo Clients for use outside components | `loadApolloClients()`                                   |
 
 ## Contributing
 
