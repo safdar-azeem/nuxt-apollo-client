@@ -1,6 +1,6 @@
 import { name, version } from '../package.json'
 import { addCodegenPlugin } from './runtime/codegen'
-import type { SetGraphqlContext } from './runtime/graphql.config'
+import type { ApolloUploadConfig, SetGraphqlContext } from './runtime/graphql.config'
 import type { ApolloClientOptions, InMemoryCacheConfig } from '@apollo/client'
 import { addImportsDir, addPlugin, addTemplate, createResolver, defineNuxtModule } from '@nuxt/kit'
 
@@ -20,12 +20,13 @@ export interface ModuleOptions {
   tokenKey?: string
   plugins?: string[]
   runOnBuild?: boolean
-  config?: PluginConfig
+  pluginConfig?: PluginConfig
   enableWatcher?: boolean
   useGETForQueries?: boolean
   setContext?: SetGraphqlContext
   memoryConfig?: InMemoryCacheConfig
   apolloClientConfig?: ApolloClientOptions<any>
+  apolloUploadConfig?: ApolloUploadConfig
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -40,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
     },
 
     prefix: 'I',
-    config: {},
+    pluginConfig: {},
     plugins: [],
     tokenKey: 'token',
     gqlDir: 'graphql',
@@ -81,6 +82,7 @@ export default defineNuxtModule<ModuleOptions>({
             memoryConfig: Record<string, any>
             useGETForQueries: boolean
             apolloClientConfig: Record<string, any>
+            apolloUploadConfig: Record<string, any>
           }
         }
       `,
@@ -99,10 +101,11 @@ export default defineNuxtModule<ModuleOptions>({
           apolloClientConfig: ${JSON.stringify(_options.apolloClientConfig)},
           gqlDir: ${JSON.stringify(_options.gqlDir)},
           prefix: ${JSON.stringify(_options.prefix)},
-          config: ${JSON.stringify(_options.config)},
+          config: ${JSON.stringify(_options.pluginConfig)},
           plugins: ${JSON.stringify(_options.plugins)},
           runOnBuild: ${JSON.stringify(_options.runOnBuild)},
           enableWatcher: ${JSON.stringify(_options.enableWatcher)},
+          apolloUploadConfig: ${_options.apolloUploadConfig},
         }
       `,
     })
