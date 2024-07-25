@@ -116,29 +116,30 @@ const handleDelete = async (id: string) => {
 
 ## Configuration Options
 
-| Option             | Type                       | Default                                        | Description                              |
-| ------------------ | -------------------------- | ---------------------------------------------- | ---------------------------------------- |
-| endPoints          | `Record<string, string>`   | `{ default: 'http://localhost:4000/graphql' }` | GraphQL endpoint URLs                    |
-| prefix             | `string`                   | `'I'`                                          | Prefix for generated types               |
-| tokenKey           | `string`                   | `'token'`                                      | Key for storing the authentication token |
-| config             | `object`                   | `{}`                                           | Additional configuration for codegen     |
-| plugins            | `string[]`                 | `[]`                                           | Additional plugins for codegen           |
-| gqlDir             | `string`                   | `'graphql'`                                    | Directory for GraphQL files              |
-| runOnBuild         | `boolean`                  | `false`                                        | Run codegen on build                     |
-| enableWatcher      | `boolean`                  | `true`                                         | Enable file watcher for codegen          |
-| setContext         | `function`                 | `({operationName, variables, token}) => any`   | Set context for codegen                  |
-| memoryConfig       | `InMemoryCacheConfig`      | `{}`                                           | Memory cache config for Apollo Client    |
-| useGETForQueries   | `boolean`                  | `false`                                        | Use GET for queries                      |
-| apolloClientConfig | `ApolloClientOptions<any>` | `null`                                         | Apollo Client config                     |
+| Option             | Type                        | Description                                  | Default                                        |
+| ------------------ | --------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| endPoints          | `Record<string, string>`    | GraphQL endpoint URLs                        | `{ default: 'http://localhost:4000/graphql' }` |
+| prefix             | `string`                    | Prefix for generated types                   | `'I'`                                          |
+| tokenKey           | `string`                    | Key for storing the authentication token     | `'token'`                                      |
+| plugins            | `string[]`                  | Additional plugins for codegen               | `[]`                                           |
+| pluginConfig       | `object`                    | Additional configuration for codegen plugins | `{}`                                           |
+| gqlDir             | `string`                    | Directory for GraphQL files                  | `'graphql'`                                    |
+| runOnBuild         | `boolean`                   | Run codegen on build                         | `false`                                        |
+| enableWatcher      | `boolean`                   | Enable file watcher for codegen              | `true`                                         |
+| setContext         | `function`                  | Set context for codegen                      | `({operationName, variables, token}) => any`   |
+| memoryConfig       | `InMemoryCacheConfig`       | Memory cache config for Apollo Client        | `{}`                                           |
+| useGETForQueries   | `boolean`                   | Use GET for queries                          | `false`                                        |
+| apolloClientConfig | `ApolloClientOptions<any>`  | Apollo Client config                         | `null`                                         |
+| apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                  | `{}`                                           |
 
 ## Functions
 
-| Function          | Description                                           | Syntax                                                  |
-| ----------------- | ----------------------------------------------------- | ------------------------------------------------------- |
-| setToken          | Sets the token in the cookie                          | `setToken({ key(optional), token, expires(optional) })` |
-| getToken          | Gets the token from the cookie                        | `getToken(key(optional))`                               |
-| removeToken       | Removes the token from the cookie                     | `removeToken(key(optional))`                            |
-| loadApolloClients | Initializes Apollo Clients for use outside components | `loadApolloClients()`                                   |
+| Function          | Description                                           | Syntax                                        |
+| ----------------- | ----------------------------------------------------- | --------------------------------------------- |
+| setToken          | Sets the token in the cookie                          | `setToken({ key(optional), token, options })` |
+| getToken          | Gets the token from the cookie                        | `getToken(key(optional))`                     |
+| removeToken       | Removes the token from the cookie                     | `removeToken(key(optional), options)`         |
+| loadApolloClients | Initializes Apollo Clients for use outside components | `loadApolloClients()`                         |
 
 ## Contributing
 
