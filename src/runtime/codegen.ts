@@ -83,7 +83,7 @@ import {
   useApolloClient,
   provideApolloClient,
   provideApolloClients,
-    useQueryLoading,
+  useQueryLoading,
   useGlobalQueryLoading,
   useMutationLoading,
   useGlobalMutationLoading,
@@ -93,7 +93,7 @@ import {
 } from "@vue/apollo-composable";
 
 import type {
-  UseQueryOptions,
+  UseQueryOptions as ApolloUseQueryOptions,
   UseQueryReturn,
   UseMutationReturn,
   UseMutationOptions, 
@@ -108,7 +108,11 @@ import type {
 
 import { useNuxtApp } from "#app";
 import {ref} from "vue";
-   
+
+interface UseQueryOptions<TData=any, TVariables=any> extends ApolloUseQueryOptions<TData, TVariables> {
+  ssr?: true
+}
+
 const defaultResult = () => {
 const result = ref(null);
 const loading = ref(false);
@@ -132,55 +136,60 @@ return {
 };
 };
 
-const useSSRQuery = async (document, variables, options) => {
-const context = useNuxtApp();
-const clientId = options?.clientId || "default";
-const apolloClient = context.$apolloClients[clientId];
 
-try {
-  const { data } = await apolloClient.query({
-    query: document,
-    variables,
+const useSSRQuery = async (document, variables, options) => {
+  const context = useNuxtApp();
+  const clientId = options?.clientId || "default";
+  const apolloClient = context.$apolloClients[clientId];
+  
+  try {
+    const queryResult = await apolloClient.query({
+      query: document,
+      variables,
+      ...options,
+    });
+  
+    const result = ref(queryResult?.data);
+    const loading = ref(false);
+    const error = ref(queryResult?.error);
+  
+    const onResult = (callback) => {
+      if (queryResult?.data) {
+        callback?.(result);
+      }
+    };
+  
+    const onError = (callback) => {
+      if (queryResult?.error) {
+        callback?.(queryResult.error);
+      }
+    };
+  
+    return { ...defaultResult(), result, loading, error, onResult, onError };
+  } catch (error) {
+    const errorRef = ref(error);
+  
+    const onError = (callback) => {
+        callback?.(error);
+    };
+  
+    return { ...defaultResult(), error: errorRef ,onError };
+  }
+  };
+  
+  const useQuery = <TResult = any, TVariables = any>(
+  document,
+  variables,
+  options
+  ): UseQueryReturn<TResult, TVariables> => {
+  if (process.server || options?.ssr) {
+    return useSSRQuery(document, variables, options) as any;
+  }
+  
+  return apolloUseQuery<TResult, TVariables>(document, variables, {
+    fetchPolicy: 'cache-and-network',
     ...options,
   });
-
-  const result = ref(data);
-  const loading = ref(false);
-  const error = ref(null);
-
-  return { ...defaultResult(), result, loading, error };
-} catch (error) {
-  const errorRef = ref(error);
-  return { ...defaultResult(), error: errorRef };
-}
-};
-
-const useQuery = <TResult = any, TVariables = any>(
-document,
-variables,
-options
-): UseQueryReturn<TResult, TVariables> => {
-const instance = getCurrentInstance();
-const ssrResult = ref(null);
-
-if (process.server) {
-  onServerPrefetch(async () => {
-    const result = await useSSRQuery(document, variables, options);
-    ssrResult.value = result.result.value;
-  });
-  return useSSRQuery(document, variables, options) as any;
-}
-
-const query = apolloUseQuery<TResult, TVariables>(document, variables, {
-  ...options,
-  fetchPolicy: 'cache-and-network',
-});
-
-if (instance && ssrResult.value) {
-  query.result.value = ssrResult.value;
-}
-
-return query;
 };
                       `
           )
@@ -205,8 +214,8 @@ return query;
             operationResultSuffix: 'Result',
             vueCompositionApiImportFrom: 'vue',
             flattenGeneratedTypesIncludeFragments: true,
-            ..._options?.config,
             overwrite: true,
+            ..._options?.pluginConfig,
           },
         },
       },
