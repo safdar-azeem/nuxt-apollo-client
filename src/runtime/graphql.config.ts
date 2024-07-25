@@ -22,6 +22,8 @@ export type SetGraphqlContext = ({
   token: string
 }) => Record<string, any>
 
+export type ApolloUploadConfig = Parameters<typeof createUploadLink>[0]
+
 interface ConfigProps {
   endPoints: Record<string, string>
   tokenKey: string
@@ -29,6 +31,7 @@ interface ConfigProps {
   memoryConfig?: InMemoryCacheConfig
   useGETForQueries?: boolean
   apolloClientConfig?: ApolloClientOptions<any> | null
+  apolloUploadConfig?: ApolloUploadConfig
 }
 
 export const graphqlConfig = ({
@@ -38,6 +41,7 @@ export const graphqlConfig = ({
   memoryConfig,
   useGETForQueries,
   apolloClientConfig,
+  apolloUploadConfig,
 }: ConfigProps) => {
   const authLink = new ApolloLink((operation, forward) => {
     const token = JSCookies.get(tokenKey)
@@ -63,8 +67,9 @@ export const graphqlConfig = ({
   for (const [key, endpoint] of Object.entries(endPoints)) {
     const link = createUploadLink({
       uri: endpoint,
-      useGETForQueries: useGETForQueries,
-      headers: { 'Apollo-Require-Preflight': 'true' },
+      ...apolloUploadConfig,
+      useGETForQueries: useGETForQueries || apolloUploadConfig?.useGETForQueries,
+      headers: { 'Apollo-Require-Preflight': 'true', ...apolloUploadConfig?.headers },
     })
 
     const config = apolloClientConfig ? { ...apolloClientConfig } : {}
