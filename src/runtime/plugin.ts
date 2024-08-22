@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const endPoints = NuxtApollo?.clients || {}
 
   const clients = graphqlConfig({
-    ...NuxtApollo,
+    ...(NuxtApollo as any),
     endPoints: endPoints,
     tokenKey: NuxtApollo?.tokenKey || 'token',
   })
