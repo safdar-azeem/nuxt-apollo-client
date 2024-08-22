@@ -29,6 +29,8 @@ export interface ModuleOptions {
   apolloUploadConfig?: ApolloUploadConfig
 }
 
+let isDone = false
+
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name,
@@ -113,9 +115,13 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
     nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
 
-    addCodegenPlugin(_options, nuxt, resolve)
-    addPlugin(resolve('./runtime/plugin'))
-    addImportsDir(resolve('./runtime/composables'))
+    if (!isDone) {
+      addPlugin(resolve('./runtime/plugin'))
+      addCodegenPlugin(_options, nuxt, resolve)
+      isDone = true
+    }
+
     addImportsDir(`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`)
+    addImportsDir(resolve('./runtime/composables'))
   },
 })
