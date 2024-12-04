@@ -20,13 +20,14 @@ export interface ModuleOptions {
   tokenKey?: string
   plugins?: string[]
   runOnBuild?: boolean
-  pluginConfig?: PluginConfig
+  pluginConfig?: Partial<PluginConfig>
   enableWatcher?: boolean
   useGETForQueries?: boolean
   setContext?: SetGraphqlContext
-  memoryConfig?: InMemoryCacheConfig
-  apolloClientConfig?: ApolloClientOptions<any>
-  apolloUploadConfig?: ApolloUploadConfig
+  memoryConfig?: Partial<InMemoryCacheConfig>
+  apolloClientConfig?: Partial<ApolloClientOptions<any>>
+  apolloUploadConfig?: Partial<ApolloUploadConfig>
+  refetchOnUpdate?: boolean
 }
 
 let isDone = false
@@ -83,6 +84,7 @@ export default defineNuxtModule<ModuleOptions>({
             enableWatcher: boolean
             memoryConfig: Record<string, any>
             useGETForQueries: boolean
+            refetchOnUpdate: boolean
             apolloClientConfig: Record<string, any>
             apolloUploadConfig: Record<string, any>
           }
@@ -105,8 +107,9 @@ export default defineNuxtModule<ModuleOptions>({
           prefix: ${JSON.stringify(_options.prefix)},
           config: ${JSON.stringify(_options.pluginConfig)},
           plugins: ${JSON.stringify(_options.plugins)},
-          runOnBuild: ${JSON.stringify(_options.runOnBuild)},
-          enableWatcher: ${JSON.stringify(_options.enableWatcher)},
+          runOnBuild: ${_options.runOnBuild},
+          enableWatcher: ${_options.enableWatcher},
+          refetchOnUpdate: ${_options?.refetchOnUpdate},
           apolloUploadConfig: ${_options.apolloUploadConfig},
         }
       `,
