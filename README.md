@@ -130,7 +130,9 @@ const handleDelete = async (id: string) => {
 | memoryConfig       | `InMemoryCacheConfig`       | Memory cache config for Apollo Client        | `{}`                                           |
 | useGETForQueries   | `boolean`                   | Use GET for queries                          | `false`                                        |
 | apolloClientConfig | `ApolloClientOptions<any>`  | Apollo Client config                         | `null`                                         |
-| apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                  | `{}`                                           |
+| apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                  | `{}
+| refetchOnUpdate    | `boolean`                   | Refetch queries when a component, page, or route updated. | `false`                                        |
+`                                           |
 
 ## Functions
 
