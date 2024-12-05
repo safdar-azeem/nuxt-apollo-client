@@ -1,6 +1,6 @@
 {
   "name": "nuxt-apollo-client",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": "safdar-azeem",
   "description": "Nuxt module for Apollo Client with SSR and codegen support.",
   "repository": "https://github.com/safdar-azeem/nuxt-apollo-client",
@@ -8,21 +8,17 @@
   "type": "module",
   "keywords": [
     "nuxt",
-    "apollo client",
-    "nuxt ssr",
-    "apollo ssr",
-    "apollo codegen",
-    "graphql codegen",
-    "nuxt codegen",
+    "nuxt3",
     "apollo",
+    "apollo-client",
     "graphql",
-    "vue",
-    "vue apollo",
-    "vue apollo composable",
+    "vue-apollo",
     "codegen",
-    "codegen client",
-    "vue codegen",
-    "nuxt module"
+    "vue-codegen",
+    "nuxt-module",
+    "ssr",
+    "vue",
+    "query"
   ],
   "exports": {
     ".": {
