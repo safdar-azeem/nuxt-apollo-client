@@ -25,7 +25,7 @@ yarn add nuxt-apollo-client
 ### Everything is set up for you: 🚀
 
 - No need to install Apollo Client or GraphQL codegen packages
-- All necessary dependencies are automatically handled
+- All necessary dependencies will be automatically handled
 - Apollo Client configuration is done for you
 
 ## Minimal Configuration
@@ -37,7 +37,8 @@ export default defineNuxtConfig({
   modules: ['nuxt-apollo-client'],
   apollo: {
     endPoints: {
-      default: 'http://localhost:4000/graphql',
+      default: 'http://localhost:4000/graphql',  
+      // Don't change the 'default' key as it is used for the default client
       // Add more endpoints as needed
     },
     // Optional configurations
