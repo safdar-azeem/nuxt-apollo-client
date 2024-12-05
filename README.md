@@ -115,6 +115,7 @@ const handleDelete = async (id: string) => {
 ```
 
 ## Configuration Options
+Customize it in your `nuxt.config.ts` file:
 
 | Option             | Type                        | Description                                  | Default                                        |
 | ------------------ | --------------------------- | -------------------------------------------- | ---------------------------------------------- |
