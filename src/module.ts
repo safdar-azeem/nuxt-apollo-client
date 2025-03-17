@@ -28,6 +28,7 @@ export interface ModuleOptions {
   apolloClientConfig?: Partial<ApolloClientOptions<any>>
   apolloUploadConfig?: Partial<ApolloUploadConfig>
   refetchOnUpdate?: boolean
+  refetchTimeout?: number
 }
 
 let isDone = false
@@ -56,6 +57,10 @@ export default defineNuxtModule<ModuleOptions>({
     apolloClientConfig: null,
   },
   async setup(_options, nuxt) {
+    if (isDone) {
+      return
+    }
+
     const { resolve } = createResolver(import.meta.url)
 
     nuxt.hook('prepare:types', ({ tsConfig }) => {
@@ -85,6 +90,7 @@ export default defineNuxtModule<ModuleOptions>({
             memoryConfig: Record<string, any>
             useGETForQueries: boolean
             refetchOnUpdate: boolean
+            refetchTimeout: number
             apolloClientConfig: Record<string, any>
             apolloUploadConfig: Record<string, any>
           }
@@ -110,6 +116,7 @@ export default defineNuxtModule<ModuleOptions>({
           runOnBuild: ${_options.runOnBuild},
           enableWatcher: ${_options.enableWatcher},
           refetchOnUpdate: ${_options?.refetchOnUpdate},
+          refetchTimeout: ${_options?.refetchTimeout},
           apolloUploadConfig: ${_options.apolloUploadConfig},
         }
       `,
@@ -118,11 +125,10 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
     nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
 
-    if (!isDone) {
-      addPlugin(resolve('./runtime/plugin'))
-      addCodegenPlugin(_options, nuxt, resolve)
-      isDone = true
-    }
+    addPlugin(resolve('./runtime/plugin'))
+    addCodegenPlugin(_options, nuxt, resolve)
+
+    isDone = true
 
     addImportsDir(`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`)
     addImportsDir(resolve('./runtime/composables'))
