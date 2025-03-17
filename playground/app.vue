@@ -1,9 +1,7 @@
-<script setup lang="ts">
-const { result, loading, error, refetch } = useMeQuery()
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
-    <h1>Hello world</h1>
+    <NuxtPage keepalive />
   </div>
 </template>
