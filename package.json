@@ -1,6 +1,6 @@
 {
   "name": "nuxt-apollo-client",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "author": "safdar-azeem",
   "description": "Nuxt module for Apollo Client with SSR and codegen support.",
   "repository": "https://github.com/safdar-azeem/nuxt-apollo-client",
@@ -10,7 +10,7 @@
     "nuxt",
     "nuxt3",
     "apollo",
-    "apollo-client",
+    "apollo client",
     "graphql",
     "vue-apollo",
     "codegen",
