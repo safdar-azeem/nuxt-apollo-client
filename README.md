@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   modules: ['nuxt-apollo-client'],
   apollo: {
     endPoints: {
-      default: 'http://localhost:4000/graphql',  
+      default: 'http://localhost:4000/graphql',
       // Don't change the 'default' key as it is used for the default client
       // Add more endpoints as needed
     },
@@ -116,24 +116,27 @@ const handleDelete = async (id: string) => {
 ```
 
 ## Configuration Options
+
 Customize it in your `nuxt.config.ts` file:
 
-| Option             | Type                        | Description                                  | Default                                        |
-| ------------------ | --------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| endPoints          | `Record<string, string>`    | GraphQL endpoint URLs                        | `{ default: 'http://localhost:4000/graphql' }` |
-| prefix             | `string`                    | Prefix for generated types                   | `'I'`                                          |
-| tokenKey           | `string`                    | Key for storing the authentication token     | `'token'`                                      |
-| plugins            | `string[]`                  | Additional plugins for codegen               | `[]`                                           |
-| pluginConfig       | `object`                    | Additional configuration for codegen plugins | `{}`                                           |
-| gqlDir             | `string`                    | Directory for GraphQL files                  | `'graphql'`                                    |
-| runOnBuild         | `boolean`                   | Run codegen on build                         | `false`                                        |
-| enableWatcher      | `boolean`                   | Enable file watcher for codegen              | `true`                                         |
-| setContext         | `function`                  | Set context for codegen                      | `({operationName, variables, token}) => any`   |
-| memoryConfig       | `InMemoryCacheConfig`       | Memory cache config for Apollo Client        | `{}`                                           |
-| useGETForQueries   | `boolean`                   | Use GET for queries                          | `false`                                        |
-| apolloClientConfig | `ApolloClientOptions<any>`  | Apollo Client config                         | `null`                                         |
-| apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                  | `{}
+| Option             | Type                        | Description                                                                                       | Default                                        |
+| ------------------ | --------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| endPoints          | `Record<string, string>`    | GraphQL endpoint URLs                                                                             | `{ default: 'http://localhost:4000/graphql' }` |
+| prefix             | `string`                    | Prefix for generated types                                                                        | `'I'`                                          |
+| tokenKey           | `string`                    | Key for storing the authentication token                                                          | `'token'`                                      |
+| plugins            | `string[]`                  | Additional plugins for codegen                                                                    | `[]`                                           |
+| pluginConfig       | `object`                    | Additional configuration for codegen plugins                                                      | `{}`                                           |
+| gqlDir             | `string`                    | Directory for GraphQL files                                                                       | `'graphql'`                                    |
+| runOnBuild         | `boolean`                   | Run codegen on build                                                                              | `false`                                        |
+| enableWatcher      | `boolean`                   | Enable file watcher for codegen                                                                   | `true`                                         |
+| setContext         | `function`                  | Set context for codegen                                                                           | `({operationName, variables, token}) => any`   |
+| memoryConfig       | `InMemoryCacheConfig`       | Memory cache config for Apollo Client                                                             | `{}`                                           |
+| useGETForQueries   | `boolean`                   | Use GET for queries                                                                               | `false`                                        |
+| apolloClientConfig | `ApolloClientOptions<any>`  | Apollo Client config                                                                              | `null`                                         |
+| apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                                                                       | `{}                                            |
 | refetchOnUpdate    | `boolean`                   | Smartly Refetch queries on component, page, or route changes, ideal for dynamic data-driven apps. | `false`                                        |
+| refetchTimeout     | `number`                    | Time in milliseconds to wait before refetching a query after a component, page, or route change.  | `10000`                                        |
+|                    |
 
 ## Functions
 
