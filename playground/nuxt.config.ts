@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
   apollo: {
     endPoints: {
-      default: 'http://localhost:4041/graphql',
+      default: 'http://localhost:4009/graphql',
     },
     prefix: 'I',
   },
