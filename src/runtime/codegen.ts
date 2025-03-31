@@ -2,22 +2,10 @@ import fs from 'fs'
 import type { ModuleOptions } from '../module'
 import codegen from 'vite-plugin-graphql-codegen'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import { applyReplacements } from './utils/replaceConfig'
+import { writeFileWithRetry } from './utils/fileUtils'
 
 let hasCodegenRun = false
-
-const writeFileWithRetry = (filePath, content, retries = 3) => {
-  try {
-    fs.writeFileSync(filePath, content, 'utf8')
-  } catch (error) {
-    if (error.code === 'EPIPE' && retries > 0) {
-      setTimeout(() => {
-        writeFileWithRetry(filePath, content, retries - 1)
-      }, 100)
-    } else {
-      console.error(`Failed to write file ${filePath}:`, error)
-    }
-  }
-}
 
 export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
   const codegenPlugin = codegen({
@@ -40,39 +28,8 @@ export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
         },
         afterAllFileWrite: (filePath) => {
           let content = fs.readFileSync(filePath, 'utf8')
-          const replaceStrings = [
-            ['VueApolloComposable.UseQueryOptions', 'UseQueryOptions'],
-            ['VueApolloComposable.UseQueryReturn', 'UseQueryReturn'],
-            ['VueApolloComposable.UseMutationReturn', 'UseMutationReturn'],
-            ['VueApolloComposable.UseMutationOptions', 'UseMutationOptions'],
-            ['VueApolloComposable.useQuery', 'useQuery'],
-            ['VueApolloComposable.useMutation', 'useMutation'],
-            ['VueApolloComposable.useLazyQuery', 'useLazyQuery'],
-            ['VueApolloComposable.UseLazyQueryReturn', 'UseLazyQueryReturn'],
-            ['VueApolloComposable.MutateFunction', 'MutateFunction'],
-            ['VueApolloComposable.MutateOverrideOptions', 'MutateOverrideOptions'],
-            ['VueApolloComposable.MutateResult', 'MutateResult'],
-            ['VueApolloComposable.UseSubscriptionOptions', 'UseSubscriptionOptions'],
-            ['VueApolloComposable.UseSubscriptionReturn', 'UseSubscriptionReturn'],
-            ['VueApolloComposable.UseResultReturn', 'UseResultReturn'],
-            ['VueApolloComposable.useQueryLoading', 'useQueryLoading'],
-            ['VueApolloComposable.useGlobalQueryLoading', 'useGlobalQueryLoading'],
-            ['VueApolloComposable.useMutationLoading', 'useMutationLoading'],
-            ['VueApolloComposable.useGlobalMutationLoading', 'useGlobalMutationLoading'],
-            ['VueApolloComposable.useSubscriptionLoading', 'useSubscriptionLoading'],
-            ['VueApolloComposable.useGlobalSubscriptionLoading', 'useGlobalSubscriptionLoading'],
-            ['VueApolloComposable.DefaultApolloClient', 'DefaultApolloClient'],
-            ['VueApolloComposable.ApolloClients', 'ApolloClients'],
-            ['VueApolloComposable.useApolloClient', 'useApolloClient'],
-            ['VueApolloComposable.UseApolloClientReturn', 'UseApolloClientReturn'],
-            ['VueApolloComposable.provideApolloClient', 'provideApolloClient'],
-            ['VueApolloComposable.provideApolloClients', 'provideApolloClients'],
-            ['VueApolloComposable.useResult', 'useResult'],
-          ]
-          replaceStrings.forEach(([oldString, newString]) => {
-            content = content.replace(new RegExp(oldString, 'g'), newString)
-          })
 
+          content = applyReplacements(content)
           content = content.replaceAll('', '')
 
           if (content.includes('import * as VueApolloComposable')) {
@@ -409,14 +366,30 @@ const useQuery = <TResult = any, TVariables = any>(
 //////////////////////////////////////////////////////////////////////////////////////// 
 
 const useLazyQuery = <TResult = any, TVariables = any>(
-   document,
-   variables,
-   options
+  document,
+  variables,
+  options
 ): UseLazyQueryReturn<TResult, TVariables> => {
-   return apolloUseLazyQuery(document, variables, {
-      fetchPolicy: 'cache-and-network',
-      ...options,
-   }) as any
+ const lazyQuery = apolloUseLazyQuery(document, variables, {
+     fetchPolicy: 'cache-and-network',
+     ...options,
+ }) as any
+
+ function fetchOrRefetch(newVariables?: TVariables) {
+   if (lazyQuery.result?.value) {
+     return lazyQuery.refetch(newVariables || variables)
+   } else {
+     lazyQuery?.load()
+     return lazyQuery.refetch(newVariables || variables)
+   }
+ }
+
+ return {
+   ...lazyQuery,
+   start: fetchOrRefetch,
+   load: fetchOrRefetch,
+   refetch: fetchOrRefetch,
+ }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////// 
