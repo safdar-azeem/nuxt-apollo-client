@@ -35,6 +35,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
       apolloClients: clients,
+      allowOffline: NuxtApollo?.allowOffline || false,
+      tokenKey: NuxtApollo?.tokenKey || 'token',
     },
   }
 })
