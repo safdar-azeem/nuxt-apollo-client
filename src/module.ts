@@ -29,6 +29,7 @@ export interface ModuleOptions {
   apolloUploadConfig?: Partial<ApolloUploadConfig>
   refetchOnUpdate?: boolean
   refetchTimeout?: number
+  allowOffline?: boolean
 }
 
 let isDone = false
@@ -43,7 +44,6 @@ export default defineNuxtModule<ModuleOptions>({
     endPoints: {
       default: 'http://localhost:4000/graphql',
     },
-
     prefix: 'I',
     pluginConfig: {},
     plugins: [],
@@ -55,6 +55,7 @@ export default defineNuxtModule<ModuleOptions>({
     setContext: null,
     useGETForQueries: false,
     apolloClientConfig: null,
+    allowOffline: false,
   },
   async setup(_options, nuxt) {
     if (isDone) {
@@ -91,6 +92,7 @@ export default defineNuxtModule<ModuleOptions>({
             useGETForQueries: boolean
             refetchOnUpdate: boolean
             refetchTimeout: number
+            allowOffline: boolean
             apolloClientConfig: Record<string, any>
             apolloUploadConfig: Record<string, any>
           }
@@ -117,6 +119,7 @@ export default defineNuxtModule<ModuleOptions>({
           enableWatcher: ${_options.enableWatcher},
           refetchOnUpdate: ${_options?.refetchOnUpdate},
           refetchTimeout: ${_options?.refetchTimeout},
+          allowOffline: ${_options?.allowOffline},
           apolloUploadConfig: ${_options.apolloUploadConfig},
         }
       `,
