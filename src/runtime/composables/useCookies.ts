@@ -1,5 +1,6 @@
 import JSCookies from 'js-cookie'
 import { NuxtApollo } from '#apollo'
+import { useNuxtApp } from '#app'
 
 interface CookieAttributes {
   expires?: number | Date | undefined
@@ -17,7 +18,8 @@ type TokenParams = {
 }
 
 const getKey = (key: string) => {
-  return key || NuxtApollo?.tokenKey || 'token'
+  const nuxtApp = useNuxtApp()
+  return key || NuxtApollo?.tokenKey || (nuxtApp?.tokenKey as any) || 'token'
 }
 
 export const setToken = (...args: [TokenParams] | [string, string?, CookieAttributes?]): void => {
