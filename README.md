@@ -1,12 +1,13 @@
 # Nuxt Apollo Client Module
 
-A Nuxt module for integrating Apollo Client with SSR and codegen support.
+A Nuxt module for integrating Apollo Client with SSR, Codegen and Offline support.
 
 ## Features
 
 - Apollo Client integration with Nuxt 3
 - Server-Side Rendering (SSR) support
 - GraphQL Code Generator integration
+- Offline support (mutations)
 - Multiple client support
 - File Upload support
 - Automatic token management
@@ -136,6 +137,7 @@ Customize it in your `nuxt.config.ts` file:
 | apolloUploadConfig | `ApolloUploadClientOptions` | Apollo Upload Client config                                                                       | `{}                                            |
 | refetchOnUpdate    | `boolean`                   | Smartly Refetch queries on component, page, or route changes, ideal for dynamic data-driven apps. | `false`                                        |
 | refetchTimeout     | `number`                    | Time in milliseconds to wait before refetching a query after a component, page, or route change.  | `10000`                                        |
+| allowOffline       | `boolean`                   | Runs mutations later if the connection drops.                                                     | `false`                                        |
 |                    |
 
 ## Functions
