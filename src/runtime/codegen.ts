@@ -290,8 +290,6 @@ const useQuery = <TResult = any, TVariables = any>(
         subscriber.setLoading(true)
       }
 
-      console.log('unwrapVariables(reactiveVariables) :>> ', newVariables||unwrapVariables(reactiveVariables))
-
       try {
         const { data } = await query.refetch(newVariables||unwrapVariables(reactiveVariables))
         if (data) {
@@ -356,12 +354,8 @@ const useQuery = <TResult = any, TVariables = any>(
       return toRaw(reactiveVariables)
     },
     (newVars, oldVars) => {
-      console.log('newVars :>> ', newVars)
-
       const newVariables = unwrapVariables(newVars)
-
-      console.log('newVariables :>> ', newVariables);
-
+      
       if (queryRefetchOnUpdate === false || cacheEntry.manualRefetchTriggered) return
 
       const newQueryKey = getQueryKey()
