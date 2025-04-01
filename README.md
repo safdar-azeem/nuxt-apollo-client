@@ -103,6 +103,20 @@ For queries that don't need server-side rendering, simply remove the await:
 const { result, loading, error, refetch } = useMeQuery();
 ```
 
+### Dynamic Refetching Query
+
+You can pass reactive variables such as ref(), reactive(), or computed() to the query, and the hook will automatically refetch the data whenever these variables update. This eliminates the need for manual refetch calls,
+
+```vue
+<script setup>
+const userId = ref('1')
+
+const { result, loading, error, refetch } = useGetUserQuery({ id: userId })
+
+const { result, loading, error, refetch } = useGetUserQuery({ id: computed(() => '1') })
+</script>
+```
+
 ### Mutations
 
 ```vue
