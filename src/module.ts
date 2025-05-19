@@ -60,12 +60,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(_options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    if (isDone) {
-      nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
-      nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
-      return
-    }
-
     nuxt.hook('prepare:types', ({ tsConfig }) => {
       tsConfig.compilerOptions = {
         ...tsConfig.compilerOptions,
@@ -131,7 +125,10 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
 
     addPlugin(resolve('./runtime/plugin'))
-    addCodegenPlugin(_options, nuxt, resolve)
+
+    if (!isDone) {
+      addCodegenPlugin(_options, nuxt, resolve)
+    }
 
     isDone = true
 
