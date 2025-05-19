@@ -117,6 +117,37 @@ const { result, loading, error, refetch } = useGetUserQuery({ id: computed(() =>
 </script>
 ```
 
+### Multiple Queries
+
+The useMultiQuery composable allows you to combine multiple GraphQL queries—along with their results, loading, and error into a single composable call.
+
+```vue
+<script setup lang="ts">
+const { result, loading, error, refetch } = useMultiQuery(
+  ['useGetUsersLazyQuery', 'useMeQuery'], // list of query keys (must match keys in generated composables)
+  {
+    // optional shared variables passed to all queries
+  },
+  {
+    // optional options object, e.g. fetchPolicy, context, etc.
+  }
+)
+
+// Access results
+const users = result.value?.getUsers
+const me = result.value?.me
+
+// Refetch Queries
+const handleRefetch = () => {
+  // Refetch all combined queries
+  refetch(variables)
+
+  // OR: Refetch only specified queries
+  refetch(variables, ['useGetUsersLazyQuery'])
+}
+</script>
+```
+
 ### Mutations
 
 ```vue
