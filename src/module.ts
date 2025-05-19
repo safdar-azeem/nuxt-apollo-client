@@ -58,11 +58,13 @@ export default defineNuxtModule<ModuleOptions>({
     allowOffline: false,
   },
   async setup(_options, nuxt) {
+    const { resolve } = createResolver(import.meta.url)
+
     if (isDone) {
+      nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
+      nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
       return
     }
-
-    const { resolve } = createResolver(import.meta.url)
 
     nuxt.hook('prepare:types', ({ tsConfig }) => {
       tsConfig.compilerOptions = {
