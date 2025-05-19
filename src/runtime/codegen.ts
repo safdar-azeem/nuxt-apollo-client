@@ -258,6 +258,11 @@ const useQuery = <TResult = any, TVariables = any>(
   const queryRefetchOnUpdate =
     options?.refetchOnUpdate !== undefined ? options.refetchOnUpdate : globalRefetchOnUpdate
 
+  // Skip caching if refetchOnUpdate is false
+  if (!queryRefetchOnUpdate) {
+    return apolloUseQuery<TResult, TVariables>(document, variables, options);
+  }
+
   // Create a reactive copy of variables to watch
   const reactiveVariables = reactive(typeof variables === 'function' ? variables() : variables)
 
@@ -281,11 +286,6 @@ const useQuery = <TResult = any, TVariables = any>(
 
   // Use lazy query to have more control over execution
   let query = useLazyQuery<TResult, TVariables>(document, reactiveVariables, options)
-
-  // Skip caching if refetchOnUpdate is false
-  if (queryRefetchOnUpdate === false) {
-    return query
-  }
 
   // Initialize or get cache entry
   if (!queryCache.has(currentQueryKey)) {
