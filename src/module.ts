@@ -18,6 +18,7 @@ export interface ModuleOptions {
   gqlDir?: string
   endPoints: Clients
   tokenKey?: string
+  tokenExpiration?: number | Date
   plugins?: string[]
   runOnBuild?: boolean
   pluginConfig?: Partial<PluginConfig>
@@ -48,6 +49,7 @@ export default defineNuxtModule<ModuleOptions>({
     pluginConfig: {},
     plugins: [],
     tokenKey: 'token',
+    tokenExpiration: 60,
     gqlDir: 'graphql',
     runOnBuild: false,
     memoryConfig: null,
@@ -77,6 +79,7 @@ export default defineNuxtModule<ModuleOptions>({
           export const NuxtApollo: {
             clients: Record<ApolloClientKeys, ClientConfig>
             tokenKey: string
+            tokenExpiration: number
             setContext: (operationName: string, variables: any) => Record<string, any>
             gqlDir: string
             prefix: string
@@ -103,6 +106,7 @@ export default defineNuxtModule<ModuleOptions>({
         export const NuxtApollo = {
           clients: ${JSON.stringify(_options.endPoints)},
           tokenKey: ${JSON.stringify(_options.tokenKey)},
+          tokenExpiration: ${_options.tokenExpiration},
           setContext:${_options.setContext},
           memoryConfig: ${JSON.stringify(_options.memoryConfig)},
           useGETForQueries: ${JSON.stringify(_options.useGETForQueries)},
