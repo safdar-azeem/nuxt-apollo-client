@@ -170,6 +170,7 @@ Customize it in your `nuxt.config.ts` file:
 | endPoints          | `Record<string, string>`    | GraphQL endpoint URLs                                                                             | `{ default: 'http://localhost:4000/graphql' }` |
 | prefix             | `string`                    | Prefix for generated types                                                                        | `'I'`                                          |
 | tokenKey           | `string`                    | Key for storing the authentication token                                                          | `'token'`                                      |
+| tokenExpiration    | `number/Date`               | When the token expires.                                                                           | 7 days                                         |
 | plugins            | `string[]`                  | Additional plugins for codegen                                                                    | `[]`                                           |
 | pluginConfig       | `object`                    | Additional configuration for codegen plugins                                                      | `{}`                                           |
 | gqlDir             | `string`                    | Directory for GraphQL files                                                                       | `'graphql'`                                    |
@@ -183,16 +184,16 @@ Customize it in your `nuxt.config.ts` file:
 | refetchOnUpdate    | `boolean`                   | Smartly Refetch queries on component, page, or route changes, ideal for dynamic data-driven apps. | `false`                                        |
 | refetchTimeout     | `number`                    | Time in milliseconds to wait before refetching a query after a component, page, or route change.  | `10000`                                        |
 | allowOffline       | `boolean`                   | Runs mutations later if the connection drops.                                                     | `false`                                        |
-|                    |
 
 ## Functions
 
-| Function          | Description                                           | Syntax                                        |
-| ----------------- | ----------------------------------------------------- | --------------------------------------------- |
-| setToken          | Sets the token in the cookie                          | `setToken({ key(optional), token, options })` |
-| getToken          | Gets the token from the cookie                        | `getToken(key(optional))`                     |
-| removeToken       | Removes the token from the cookie                     | `removeToken(key(optional), options)`         |
-| loadApolloClients | Initializes Apollo Clients for use outside components | `loadApolloClients()`                         |
+| Function           | Description                                                   | Syntax                                                           |
+| ------------------ | ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| setToken           | Sets the token in the cookie                                  | `setToken({ key(optional), token, options })`                    |
+| getToken           | Gets the token from the cookie                                | `getToken(key(optional))`                                        |
+| removeToken        | Removes the token from the cookie                             | `removeToken(key(optional), options)`                            |
+| loadApolloClients  | Initializes Apollo Clients for use outside components         | `loadApolloClients()`                                            |
+| useKeepCookieAlive | Keeps the auth token cookie alive by updating it periodically | `useKeepCookieAlive(debounceMs?: number)` (defaults to 10000 ms) |
 
 ## Contributing
 
