@@ -13,6 +13,7 @@ export const addCodegenPlugin = (_options: ModuleOptions, nuxt, resolve) => {
     enableWatcher: _options?.enableWatcher,
 
     config: {
+      watch: [`${nuxt.options?.rootDir}/${_options?.gqlDir}`],
       schema: Object.values(_options?.endPoints),
       documents: [
         `${nuxt.options?.rootDir}/${_options?.gqlDir}/**/*.ts`,
@@ -889,11 +890,6 @@ const useMutation = <TResult = any, TVariables = any>(
   return mutation
 }
 
-
-import type * as VueCompositionApi from 'vue';
-export type Maybe<T> = T;
-export type InputMaybe<T> = Maybe<T> | Ref<T>|ComputedRef<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] | Ref<T[K]> | ComputedRef<T[K]>; };
 `
             )
           }
