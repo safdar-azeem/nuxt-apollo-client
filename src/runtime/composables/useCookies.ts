@@ -1,6 +1,6 @@
 import JSCookies from 'js-cookie'
 import { NuxtApollo } from '#apollo'
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useCookie } from '#app'
 import { onMounted, onUnmounted } from 'vue'
 
 interface CookieAttributes {
@@ -43,7 +43,8 @@ export const setToken = (...args: [TokenParams] | [string, string?, CookieAttrib
 }
 
 export const getToken = (key = '') => {
-  return JSCookies.get(getKey(key))
+  const token = useCookie(getKey(key))
+  return token?.value
 }
 
 export const removeToken = (key = '', options?: CookieAttributes) => {
