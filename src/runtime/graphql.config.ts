@@ -1,4 +1,4 @@
-import JSCookies from 'js-cookie'
+import { useCookie } from '#app'
 
 // @ts-ignore
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
@@ -44,7 +44,7 @@ export const graphqlConfig = ({
   apolloUploadConfig,
 }: ConfigProps) => {
   const authLink = new ApolloLink((operation, forward) => {
-    const token = JSCookies.get(tokenKey)
+    const token = useCookie(tokenKey)?.value
     const context = setContext?.({
       operationName: operation?.operationName,
       variables: operation?.variables,
