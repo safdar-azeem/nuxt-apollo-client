@@ -680,16 +680,11 @@ const useLazyQuery = <TResult = any, TVariables = any>(
   async function fetchOrRefetch(newVariables?: TVariables) {
       loadingState.value = lazyQuery.result?.value ? false : true
     
-    try {
-      // First try to load the query
-      await lazyQuery?.load(document)
-      
-      
-      if (lazyQuery.result?.value) {
+    try {      
+      if (!lazyQuery.result?.value) {
+        await lazyQuery?.load(document)
         return lazyQuery.refetch(newVariables || variables)
-      } else if (options?.fetchPolicy !== 'cache-only') {
-        return lazyQuery?.load()
-      } else {
+      } else { 
         return lazyQuery.refetch(newVariables || variables)
       }
     } finally {
@@ -712,14 +707,8 @@ export function useMultiQuery(
   variables: Record<string, any> = {},
   options: UseQueryOptions<any> = {}
 ) {
-  const results = queries.map((originalKey) => {
-    const key = originalKey
-    .replace(/^use/, '')          
-    .replace(/LazyQuery$/, '')    
-    .replace(/Query$/, '')        
-    .replace(/^./, (s) => s.toLowerCase()) 
-
-    const query = allGraphqlDocuments[originalKey]
+  const results = queries.map((key) => {
+    const query = allGraphqlDocuments[key]
     if (!query || typeof query !== 'function') {
       return { key, result: null, loading: null, error: null, refetch: null }
     }
