@@ -1,8 +1,10 @@
 import { name, version } from '../package.json'
-import { addCodegenPlugin } from './runtime/codegen'
+import { enableCodegen } from './runtime/codegen'
 import type { ApolloUploadConfig, SetGraphqlContext } from './runtime/graphql.config'
 import type { ApolloClientOptions, InMemoryCacheConfig } from '@apollo/client'
 import { addImportsDir, addPlugin, addTemplate, createResolver, defineNuxtModule } from '@nuxt/kit'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import path from 'path'
 
 interface Clients {
   [key: string]: string
@@ -32,8 +34,6 @@ export interface ModuleOptions {
   refetchTimeout?: number
   allowOffline?: boolean
 }
-
-let isDone = false
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -69,6 +69,8 @@ export default defineNuxtModule<ModuleOptions>({
         noImplicitAny: false,
       }
     })
+
+    addImportsDir(resolve('./runtime/composables'))
 
     addTemplate({
       filename: 'apollo.d.ts',
@@ -126,17 +128,20 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     nuxt.options.alias['#apollo'] = resolve(nuxt.options.buildDir, 'apollo')
-    nuxt.options.alias['#graphql'] = `${nuxt.options?.rootDir}/${_options.gqlDir}/generated`
+    nuxt.options.alias['#graphql'] = path.resolve(
+      nuxt.options.rootDir,
+      _options.gqlDir,
+      'generated'
+    )
 
     addPlugin(resolve('./runtime/plugin'))
 
-    if (!isDone) {
-      addCodegenPlugin(_options, nuxt, resolve)
+    if (nuxt.options.vite) {
+      nuxt.options.vite.plugins = nuxt.options.vite.plugins || []
+      nuxt.options.vite.plugins.push(viteCommonjs())
     }
 
-    isDone = true
-
+    enableCodegen(_options, nuxt, resolve)
     addImportsDir(`${nuxt.options?.rootDir}/${_options?.gqlDir}/generated`)
-    addImportsDir(resolve('./runtime/composables'))
   },
 })
