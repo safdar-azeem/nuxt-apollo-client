@@ -1132,7 +1132,7 @@
     "@graphql-codegen/plugin-helpers" "^5.0.3"
     tslib "~2.6.0"
 
-"@graphql-codegen/cli@>=1.0.0 <6.0.0", "@graphql-codegen/cli@^5.0.2":
+"@graphql-codegen/cli@^5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/cli/-/cli-5.0.2.tgz#07ff691c16da4c3dcc0e1995d3231530379ab317"
   integrity sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==
@@ -8809,15 +8809,6 @@ vite-plugin-checker@^0.7.0:
     vscode-languageserver-textdocument "^1.0.1"
     vscode-uri "^3.0.2"
 
-vite-plugin-graphql-codegen@^3.3.8:
-  version "3.3.8"
-  resolved "https://registry.yarnpkg.com/vite-plugin-graphql-codegen/-/vite-plugin-graphql-codegen-3.3.8.tgz#c185b44ed4cafd8fe7a734db6ec18b4b0521c79d"
-  integrity sha512-ZG3QIRPRyxoxN2aDcMxZAh2EfiT5W6CEZlTD1RMl7E5Qk51Z/Yqfc5gVWRNJbzn0xXlD+FARWhVOg+T/YZZypA==
-  dependencies:
-    "@graphql-codegen/cli" ">=1.0.0 <6.0.0"
-    "@graphql-codegen/plugin-helpers" "^5.0.4"
-    vite ">=2.7.0 <7.0.0"
-
 vite-plugin-inspect@^0.8.4:
   version "0.8.5"
   resolved "https://registry.yarnpkg.com/vite-plugin-inspect/-/vite-plugin-inspect-0.8.5.tgz#9063a03c6868c3c78bdddd3a64aa57f7fa9cd3b7"
@@ -8848,7 +8839,7 @@ vite-plugin-vue-inspector@^5.1.2:
     kolorist "^1.8.0"
     magic-string "^0.30.4"
 
-"vite@>=2.7.0 <7.0.0", vite@^5.0.0, vite@^5.3.2:
+vite@^5.0.0, vite@^5.3.2:
   version "5.3.4"
   resolved "https://registry.yarnpkg.com/vite/-/vite-5.3.4.tgz#b36ebd47c8a5e3a8727046375d5f10bf9fdf8715"
   integrity sha512-Cw+7zL3ZG9/NZBB8C+8QbQZmR54GwqIz+WMI4b3JgdYJvX+ny9AjJXqkGQlDXSXRP9rP0B4tbciRMOVEKulVOA==
