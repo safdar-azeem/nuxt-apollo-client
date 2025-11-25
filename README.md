@@ -23,6 +23,8 @@ npm install nuxt-apollo-client
 yarn add nuxt-apollo-client
 ```
 
+> Don't forget to follow me on [GitHub](https://github.com/safdar-azeem)!
+
 ### Everything is set up for you: 🚀
 
 - No need to install Apollo Client or GraphQL codegen packages
