@@ -99,9 +99,11 @@ export const enableCodegen = (options: ModuleOptions, nuxt: any, resolve: any) =
   const targetPath = path.resolve(rootDir, gqlDir)
   const generatedPath = path.resolve(targetPath, 'generated')
 
-  nuxt.hook('build:before', async () => {
-    await runCodegen(options, targetPath, generatedPath)
-  })
+  if (nuxt.options.dev || options.runOnBuild) {
+    nuxt.hook('build:before', async () => {
+      await runCodegen(options, targetPath, generatedPath)
+    })
+  }
 
   if (nuxt.options.dev && options.enableWatcher) {
     nuxt.hook('builder:watch', async (event: string, relativePath: string) => {
