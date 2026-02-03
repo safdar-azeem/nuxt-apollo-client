@@ -13,16 +13,18 @@ const useLazyQuery = <TResult = any, TVariables = any>(
 
   // Always keep loading as false after initial fetch
   const loadingState = ref(false)
-   
+     
   async function fetchOrRefetch(newVariables?: TVariables) {
       loadingState.value = lazyQuery.result?.value ? false : true
-     
-    try {      
+      
+    try {       
       if (!lazyQuery.result?.value) {
         await lazyQuery?.load(document)
-        return lazyQuery.refetch(newVariables || variables)
+        return lazyQuery.refetch(unwrapVariables(newVariables || variables))
       } else { 
-        return lazyQuery.refetch(newVariables || variables)
+        // Ensure variables are safely unwrapped to avoid circular references (ReactiveEffect) during stringify
+        const safeVariables = unwrapVariables(newVariables || variables)
+        return lazyQuery.refetch(safeVariables)
       }
     } finally {
       loadingState.value = false
